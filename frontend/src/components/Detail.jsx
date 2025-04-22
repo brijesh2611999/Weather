@@ -19,3 +19,21 @@ const Detail = ({ note, setNote }) => {
 };
 
 export default Detail;
+
+// import React from 'react';
+
+// const Detail = ({ note, setNote }) => {
+//   return (
+//     <div className="mt-4">
+//       <textarea
+//         value={note}
+//         onChange={(e) => setNote(e.target.value)}
+//         className="w-full p-3 border rounded-lg"
+//         placeholder="How are you feeling today?"
+//         rows="4"
+//       />
+//     </div>
+//   );
+// };
+
+// export default Detail;

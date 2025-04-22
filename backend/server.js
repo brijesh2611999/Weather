@@ -42,17 +42,22 @@ const entrySchema = new mongoose.Schema({
 
 const Entry = mongoose.model('Entry', entrySchema);
 
-// Routes
+
 app.post('/entries', async (req, res) => {
   try {
-    console.log('Received entry data:', req.body); // Log incoming data
-    const newEntry = new Entry(req.body);
-    const savedEntry = await newEntry.save();
-    console.log('Saved entry:', savedEntry); // Log saved data
-    res.status(201).json(savedEntry);
+    console.log('Received entry:', req.body);
+    const savedEntry = await Entry.create(req.body);
+    console.log('Saved to DB:', savedEntry);
+    res.status(201).json({ 
+      success: true,
+      data: savedEntry
+    });
   } catch (err) {
-    console.error('Error saving entry:', err);
-    res.status(500).json({ error: 'Failed to save entry', details: err.message });
+    console.error('Save error:', err);
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Database save failed'
+    });
   }
 });
 
@@ -98,15 +103,7 @@ app.get('/entries', async (req, res) => {
   }
 });
 
-// app.delete('/entries/:id', async (req, res) => {
-//   try {
-//     await Entry.findByIdAndDelete(req.params.id);
-//     res.json({ message: 'Entry deleted' });
-//   } catch (err) {
-//     console.error('Error deleting entry:', err);
-//     res.status(500).json({ error: 'Failed to delete entry' });
-//   }
-// });
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

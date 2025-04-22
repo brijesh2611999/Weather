@@ -1,16 +1,18 @@
-
 import React from 'react';
 import { format } from 'date-fns';
 
-const CalendarView = ({ entries }) => {
+const CalendarView = ({ entries = [] }) => {  // Default to empty array
+  // Ensure entries is always an array and not null/undefined
+  const safeEntries = Array.isArray(entries) ? entries : [];
+  
   return (
     <div className="mt-8">
       <h2 className="text-xl font-semibold mb-4 text-center">Your Journal History</h2>
-      {entries.length === 0 ? (
+      {safeEntries.length === 0 ? (
         <p className="text-center text-gray-500">No entries yet</p>
       ) : (
         <div className="space-y-3">
-          {entries.slice().reverse().map((entry, index) => (
+          {safeEntries.slice().reverse().map((entry, index) => (
             <div key={index} className="bg-white/80 p-4 rounded-lg shadow">
               <div className="flex justify-between items-center mb-2">
                 <h3 className="font-medium">

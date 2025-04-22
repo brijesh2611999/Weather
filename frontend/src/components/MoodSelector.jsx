@@ -41,3 +41,40 @@ const MoodSelector = ({ mood, setMood }) => {
 };
 
 export default MoodSelector;
+
+
+
+// import React from 'react';
+
+// const MoodSelector = ({ mood, setMood }) => {
+//   const moods = [
+//     { id: 'happy', label: '😊 Happy' },
+//     { id: 'sad', label: '😢 Sad' },
+//     { id: 'angry', label: '😠 Angry' },
+//     { id: 'calm', label: '😌 Calm' },
+//     { id: 'excited', label: '🤩 Excited' },
+//     { id: 'tired', label: '😴 Tired' }
+//   ];
+
+//   return (
+//     <div className="my-4">
+//       <h2 className="text-lg font-semibold mb-2">Select your mood:</h2>
+//       <div className="grid grid-cols-2 gap-2">
+//         {moods.map((m) => (
+//           <button
+//             key={m.id}
+//             type="button"
+//             onClick={() => setMood(m.id)}
+//             className={`p-3 rounded-lg text-left transition-all ${
+//               mood === m.id ? 'bg-blue-100 border-2 border-blue-400' : 'bg-gray-100 hover:bg-gray-200'
+//             }`}
+//           >
+//             {m.label}
+//           </button>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MoodSelector;
