@@ -127,7 +127,7 @@ function App() {
   
     try {
       console.log('Sending entry to backend:', newEntry);
-      const res = await axios.post('https://weather-ddcq.onrender.com//entries', newEntry, {
+      const res = await axios.post('https://weather-ddcq.onrender.com/entries', newEntry, {
         headers: {
           'Content-Type': 'application/json'
         }
