@@ -59,7 +59,7 @@ app.post('/entries', async (req, res) => {
 app.get('/entries', async (req, res) => {
   try {
     const entries = await Entry.find().sort({ date: -1 });
-    res.json(entries);
+    return res.json(entries);
   } catch (err) {
     console.error('Error fetching entries:', err);
     res.status(500).json({ error: 'Failed to fetch entries' });

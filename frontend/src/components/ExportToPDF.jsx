@@ -1,121 +1,98 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { FaFilePdf } from 'react-icons/fa';
 
 const ExportToPDF = ({ entries }) => {
   const componentRef = useRef();
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: `MoodJournal_${new Date().toISOString().split('T')[0]}`,
+    onBeforeGetContent: () => setIsGenerating(true),
+    onAfterPrint: () => setIsGenerating(false),
     pageStyle: `
       @page {
         size: A4;
-        margin: 20mm;
+        margin: 15mm;
       }
       body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
+        font-family: Arial, sans-serif;
+        line-height: 1.5;
       }
       .entry {
+        margin-bottom: 15px;
         page-break-inside: avoid;
-        margin-bottom: 16px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid #eee;
-      }
-      .entry:last-child {
-        border-bottom: none;
-      }
-      .header {
-        margin-bottom: 24px;
-        text-align: center;
-      }
-      .mood {
-        font-weight: bold;
-        text-transform: capitalize;
-        margin-right: 8px;
-      }
-      .weather {
-        color: #666;
-      }
-      .notes {
-        margin-top: 8px;
-        padding: 8px;
-        background-color: #f8f8f8;
-        border-radius: 4px;
       }
     `,
-    onAfterPrint: () => console.log('PDF generated successfully')
+    removeAfterPrint: true
   });
 
-  // Function to get emoji for mood
-  const getMoodEmoji = (mood) => {
-    const emojis = {
-      happy: '😊',
-      sad: '😢',
-      angry: '😠',
-      calm: '😌',
-      excited: '🤩',
-      tired: '😴'
-    };
-    return emojis[mood] || '';
-  };
+  if (!entries || entries.length === 0) {
+    return (
+      <button 
+        disabled 
+        className="bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed"
+      >
+        <FaFilePdf className="inline mr-2" />
+        No entries to export
+      </button>
+    );
+  }
 
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <button
         onClick={handlePrint}
-        disabled={entries.length === 0}
-        className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg mx-auto ${
-          entries.length > 0 
-            ? 'bg-red-500 hover:bg-red-600 text-white shadow-md transition-all' 
-            : 'bg-gray-300 cursor-not-allowed'
+        disabled={isGenerating}
+        className={`bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors ${
+          isGenerating ? 'opacity-50 cursor-wait' : ''
         }`}
       >
-        <FaFilePdf className="text-lg" />
-        <span>Export Journal as PDF</span>
+        {isGenerating ? (
+          'Generating PDF...'
+        ) : (
+          <>
+            <FaFilePdf className="inline mr-2" />
+            Export to PDF ({entries.length} entries)
+          </>
+        )}
       </button>
 
-      {/* Hidden content that will be printed */}
       <div style={{ display: 'none' }}>
-        <div ref={componentRef} className="p-8">
-          <div className="header">
-            <h1 className="text-3xl font-bold mb-2">Mood Journal</h1>
-            <p className="text-gray-600">Generated on {new Date().toLocaleDateString()}</p>
-          </div>
+        <div ref={componentRef} className="p-6">
+          <h1 className="text-2xl font-bold mb-4">Mood Journal Entries</h1>
+          <p className="text-gray-600 mb-6">
+            Generated on {new Date().toLocaleDateString()}
+          </p>
           
-          {entries.slice().reverse().map((entry, index) => (
+          {entries.map((entry, index) => (
             <div key={index} className="entry">
-              <div className="flex items-center justify-between mb-2">
-                <h2 className="text-xl font-semibold">
+              <div className="flex justify-between items-start mb-1">
+                <h2 className="font-semibold">
                   {new Date(entry.date).toLocaleDateString('en-US', {
                     weekday: 'long',
-                    year: 'numeric',
                     month: 'long',
                     day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
+                    year: 'numeric'
                   })}
                 </h2>
-                <div className="flex items-center">
-                  <span className="mood">
-                    {getMoodEmoji(entry.mood)} {entry.mood}
-                  </span>
-                </div>
+                <span className="capitalize bg-gray-100 px-2 py-1 rounded">
+                  {entry.mood}
+                </span>
               </div>
               
               {entry.weather && (
-                <div className="weather mb-2">
-                  <strong>Weather:</strong> {entry.weather.condition} ({Math.round(entry.weather.temp)}°C)
-                </div>
+                <p className="text-sm text-gray-600 mb-1">
+                  Weather: {entry.weather.condition} ({Math.round(entry.weather.temp)}°C)
+                </p>
               )}
               
               {entry.note && (
-                <div className="notes">
-                  <strong>Notes:</strong> {entry.note}
-                </div>
+                <p className="mt-2 whitespace-pre-wrap">{entry.note}</p>
               )}
+              
+              {index < entries.length - 1 && <hr className="my-3 border-gray-200" />}
             </div>
           ))}
         </div>
