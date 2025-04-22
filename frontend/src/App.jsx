@@ -34,6 +34,7 @@ function App() {
   };
 
   useEffect(() => {
+    e.prevent();
     const fetchData = async () => {
       try {
         if (navigator.geolocation) {
