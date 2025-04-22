@@ -66,15 +66,15 @@ app.get('/entries', async (req, res) => {
   }
 });
 
-app.delete('/entries/:id', async (req, res) => {
-  try {
-    await Entry.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Entry deleted' });
-  } catch (err) {
-    console.error('Error deleting entry:', err);
-    res.status(500).json({ error: 'Failed to delete entry' });
-  }
-});
+// app.delete('/entries/:id', async (req, res) => {
+//   try {
+//     await Entry.findByIdAndDelete(req.params.id);
+//     res.json({ message: 'Entry deleted' });
+//   } catch (err) {
+//     console.error('Error deleting entry:', err);
+//     res.status(500).json({ error: 'Failed to delete entry' });
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

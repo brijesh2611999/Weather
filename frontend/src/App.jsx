@@ -143,16 +143,16 @@ function App() {
   };
   
   // In your fetchEntries function:
-  // const fetchEntries = async () => {
-  //   try {
-  //     const res = await axios.get('https://weather-ddcq.onrender.com/entries');
-  //     console.log('Fetched entries:', res.data);
-  //     setEntries(res.data);
-  //   } catch (err) {
-  //     console.error("Failed to fetch entries:", err.response?.data || err.message);
-  //     setError("Failed to load entries");
-  //   }
-  // };
+  const fetchEntries = async () => {
+    try {
+      const res = await axios.get('https://weather-ddcq.onrender.com/entries');
+      console.log('Fetched entries:', res.data);
+      setEntries(res.data);
+    } catch (err) {
+      console.error("Failed to fetch entries:", err.response?.data || err.message);
+      setError("Failed to load entries");
+    }
+  };
 
   return (
     <div className={`min-h-screen p-6 transition-colors duration-300 ${mood ? moodToColor[mood] : 'bg-gray-50'}`}>
