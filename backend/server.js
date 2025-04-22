@@ -56,13 +56,45 @@ app.post('/entries', async (req, res) => {
   }
 });
 
+// app.get('/entries', async (req, res) => {
+//   try {
+//     const entries = await Entry.find().sort({ date: -1 });
+//     return res.json(entries);
+//   } catch (err) {
+//     console.error('Error fetching entries:', err);
+//     res.status(500).json({ error: 'Failed to fetch entries' });
+//   }
+// });
+// Improved entries route with better error handling and logging
 app.get('/entries', async (req, res) => {
   try {
-    const entries = await Entry.find().sort({ date: -1 });
-    return res.json(entries);
+    console.log('Fetching entries from database...');
+    const entries = await Entry.find().sort({ date: -1 }).lean();
+    
+    // Log how many entries were found
+    console.log(`Found ${entries.length} entries`);
+    
+    // Add validation for the data structure
+    const validatedEntries = entries.map(entry => ({
+      date: entry.date || new Date(),
+      mood: entry.mood || 'unknown',
+      note: entry.note || '',
+      weather: entry.weather || {}
+    }));
+    
+    return res.json({
+      success: true,
+      count: validatedEntries.length,
+      data: validatedEntries
+    });
+    
   } catch (err) {
     console.error('Error fetching entries:', err);
-    res.status(500).json({ error: 'Failed to fetch entries' });
+    return res.status(500).json({ 
+      success: false,
+      error: 'Failed to fetch entries',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 });
 

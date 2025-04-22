@@ -89,29 +89,6 @@ function App() {
     }
   };
 
-  // const saveEntry = async () => {
-  //   if (!mood) return;
-
-  //   const newEntry = {
-  //     date: new Date(),
-  //     mood,
-  //     note,
-  //     weather: {
-  //       temp: weather?.main?.temp,
-  //       condition: weather?.weather?.[0]?.main
-  //     }
-  //   };
-
-  //   try {
-  //     const res = await axios.post('http://localhost:5000/api/entries', newEntry);
-  //     setEntries(prev => [...prev, res.data]);
-  //     setNote('');
-  //     alert('Entry saved to backend!');
-  //   } catch (err) {
-  //     console.error("Error saving entry:", err);
-  //     alert('Failed to save entry.');
-  //   }
-  // };
   const saveEntry = async () => {
     if (!mood) return;
   
@@ -143,16 +120,41 @@ function App() {
   };
   
   // In your fetchEntries function:
-  const fetchEntries = async () => {
-    try {
-      const res = await axios.get('https://weather-ddcq.onrender.com/entries');
-      console.log('Fetched entries:', res.data);
-      setEntries(res.data);
-    } catch (err) {
-      console.error("Failed to fetch entries:", err.response?.data || err.message);
-      setError("Failed to load entries");
+  // const fetchEntries = async () => {
+  //   try {
+  //     const res = await axios.get('https://weather-ddcq.onrender.com/entries');
+  //     console.log('Fetched entries:', res.data);
+  //     setEntries(res.data);
+  //   } catch (err) {
+  //     console.error("Failed to fetch entries:", err.response?.data || err.message);
+  //     setError("Failed to load entries");
+  //   }
+  // };
+  // In your fetchEntries function
+const fetchEntries = async () => {
+  try {
+    console.log('Fetching entries from server...');
+    const res = await axios.get('https://weather-ddcq.onrender.com/entries');
+    
+    console.log('Entries response:', {
+      status: res.status,
+      dataCount: res.data.data?.length || 0,
+      firstEntry: res.data.data?.[0]
+    });
+    
+    if (res.data.success && res.data.data) {
+      setEntries(res.data.data);
+    } else {
+      throw new Error('Invalid response format');
     }
-  };
+  } catch (err) {
+    console.error("Failed to fetch entries:", {
+      error: err.message,
+      response: err.response?.data
+    });
+    setError("Failed to load entries");
+  }
+};
 
   return (
     <div className={`min-h-screen p-6 transition-colors duration-300 ${mood ? moodToColor[mood] : 'bg-gray-50'}`}>
